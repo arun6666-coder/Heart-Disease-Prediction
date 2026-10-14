@@ -1,6 +1,8 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import joblib
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
@@ -21,7 +23,11 @@ X = data.drop("target", axis=1)
 y = data["target"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
 )
 
 model = DecisionTreeClassifier(
@@ -31,8 +37,13 @@ model = DecisionTreeClassifier(
 )
 
 model.fit(X_train, y_train)
+
 y_pred = model.predict(X_test)
 
+os.makedirs("models", exist_ok=True)
+joblib.dump(model, "models/decision_tree_model.pkl")
+
+print("\nDecision Tree model saved successfully.")
 print("\nAccuracy:", round(accuracy_score(y_test, y_pred) * 100, 2), "%")
 
 print("\nClassification Report:")
